@@ -1,26 +1,35 @@
 import itertools
 
 def win(current_game):
-	
+
+	def all_same(l):
+		if l.count(l[0]) == len(l) and l[0] != 0:
+			return True
+		else:
+			return False
+
 	#Horizontal
 	for row in game:	
-		if row.count(row[0]) == len(row) and row[0] != 0:
+		if all_same(row):
 			print(f"Player {row[0]} is the winner horizontally.")
+			return True
 
 	#Diagonal
 	diags = []
 	for ix in range(len(game)):
 		diags.append(game[ix][ix])
 	
-	if diags.count(diags[0]) == len(diags) and diags[0] != 0:
+	if all_same(diags):
 		print(f"Player{diags[0]} is the winner diagonally (\\).")
+		return True
 
 	diags = []
 	for col, row, in zip(reversed(range(len(game))), range(len(game))):
 		diags.append(game[row][col])
 	
-	if diags.count(diags[0]) == len(diags) and diags[0] != 0:
+	if all_same(diags):
 		print(f"Player{diags[0]} is the winner diagonally(/).")
+		return True
 
 	#Vertical
 	for col in range(len(game)):
@@ -29,9 +38,11 @@ def win(current_game):
 		for row in game:
 			check.append(row[col])
 
-		if check.count(check[0]) == len(check) and row[0] != 0:
+		if all_same(check):
 			print(f"Player{check[0]} is the winner vartically")
+			return True
 
+	return False
 
 def game_board(game_map, player=0, row=0, column=0, just_display=False):
 	try:
@@ -53,10 +64,9 @@ def game_board(game_map, player=0, row=0, column=0, just_display=False):
 		print("Something go wrong !")
 		return game_map, False
 		
-	
-
 Play = True
 players = [1,2]
+
 while Play:
 	game = [[0,0,0],
 			[0,0,0],
@@ -75,5 +85,16 @@ while Play:
 			row_chocie = int(input("What row do you want play? (0, 1, 2):"))
 			game, played = game_board(game,current_player,row_chocie,column_chocie)
 
+		if win(game):
+			game_won = True
+			again = input("The game is over, would you like to play again? (y/n)")
+			if again.lower() == "y":
+				print("restatring")
+			elif again.lower() == "n":
+				print("END")
+				Play = False
+			else:
+				 print("Not a valid answer, so ... we END game")
+				 Play = False
 
-#game = game_board(game, player=1, row=2, column=1)
+
